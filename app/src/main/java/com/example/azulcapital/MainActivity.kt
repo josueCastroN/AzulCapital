@@ -1,47 +1,53 @@
 package com.example.azulcapital
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.azulcapital.ui.theme.AzulCapitalTheme
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            AzulCapitalTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }
+        setContentView(R.layout.activity_main)
+
+        // Referencias a los elementos del layout
+        val logo: ImageView = findViewById(R.id.logo)
+        val logoText: TextView = findViewById(R.id.logo_text)
+
+        // Animación para mover el logo hacia arriba
+        val moveUp = ObjectAnimator.ofPropertyValuesHolder(
+            logo,
+            PropertyValuesHolder.ofFloat("translationY", -250f),
+            PropertyValuesHolder.ofFloat("scaleX", 0.7f),
+            PropertyValuesHolder.ofFloat("scaleY", 0.7f)
+        )
+        moveUp.duration = 1500
+
+        // Animación para mover el texto hacia arriba
+        val textMoveUp = ObjectAnimator.ofPropertyValuesHolder(
+            logoText,
+            PropertyValuesHolder.ofFloat("translationY", -250f),
+            PropertyValuesHolder.ofFloat("alpha", 0f)
+        // Desvanece el texto
+        )
+        textMoveUp.duration = 1500
+
+        // Ejecutar la animación y luego abrir la siguiente pantalla
+        moveUp.start()
+        textMoveUp.start()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            val intent = Intent(this, loginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, 2000) // Espera 2 segundos antes de cambiar de pantalla
     }
+
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AzulCapitalTheme {
-        Greeting("Android")
-    }
-}
